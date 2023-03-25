@@ -5,21 +5,34 @@ const highScoreElement = document.querySelector('.score-card .high-score');
 const restartGameElement = document.querySelector('.restart-game');
 const gameContainerElement = document.querySelector('.game-container');
 
-const OBSTACLE_SIZES = ['xs','s','m','l'];
+const OBSTACLE_SIZES = ['xs', 's', 'm', 'l'];
+
+// audio
+var bgm = document.getElementById("bgm");
+bgm.volume = 0.3;
+bgm.play();
+
+function gameEnded() {
+    // Stop the music
+    bgm.pause();
+    bgm.currentTime = 0;
+}
+
 /**
  * JUMP
  */
 function addJumpListener() {
     document.addEventListener('keydown', event => {
-        if(event.key === ' ' || event.key === 'ArrowUp') {
+        if (event.key === ' ' || event.key === 'ArrowUp') {
             jump();
         }
     })
 }
 
 let jumping = false;
+
 function jump() {
-    if(jumping) {
+    if (jumping) {
         return;
     }
 
@@ -36,9 +49,10 @@ function jump() {
  * COLLISION
  */
 let collisionInterval;
+
 function monitorCollision() {
     collisionInterval = setInterval(() => {
-        if(isCollision()) {
+        if (isCollision()) {
             checkForHighScore();
             stopGame();
         }
@@ -47,12 +61,13 @@ function monitorCollision() {
 
 // Left buffer for tail
 const LEFT_BUFFER = 50;
+
 function isCollision() {
     const playerClientRect = playerElement.getBoundingClientRect();
     const playerL = playerClientRect.left;
     const playerR = playerClientRect.right;
     const playerB = playerClientRect.bottom;
-    
+
 
     const obstacleClientRect = obstacleElement.getBoundingClientRect();
     const obstacleL = obstacleClientRect.left;
@@ -69,11 +84,13 @@ function isCollision() {
  * SCORE
  */
 let score = 0;
+
 function setScore(newScore) {
     scoreElement.innerHTML = score = newScore;
 }
 
 let scoreInterval;
+
 function countScore() {
     scoreInterval = setInterval(() => {
         setScore(score + 1);
@@ -81,13 +98,14 @@ function countScore() {
 }
 
 let highscore = localStorage.getItem('highscore') || 0;
+
 function setHighScore(newScore) {
     highScoreElement.innerText = highscore = newScore;
     localStorage.setItem('highscore', newScore);
 }
 
 function checkForHighScore() {
-    if(score > highscore) {
+    if (score > highscore) {
         setHighScore(score);
     }
 }
@@ -101,6 +119,7 @@ function getRandomObstacleSize() {
 }
 
 let changeObstacleInterval;
+
 function randomiseObstacle() {
     changeObstacleInterval = setInterval(() => {
         const obstacleSize = getRandomObstacleSize();
@@ -117,6 +136,7 @@ function stopGame() {
     clearInterval(changeObstacleInterval);
     restartGameElement.classList.add('show');
     gameContainerElement.classList.add('stop')
+    gameEnded();
 }
 
 function restart() {
