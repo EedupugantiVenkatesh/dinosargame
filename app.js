@@ -130,7 +130,7 @@ function randomiseObstacle() {
 /**
  * STOP GAME
  */
-function stopGame(){
+function stopGame() {
     clearInterval(collisionInterval);
     clearInterval(scoreInterval);
     clearInterval(changeObstacleInterval);
